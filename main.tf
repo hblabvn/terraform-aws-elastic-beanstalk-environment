@@ -710,6 +710,12 @@ resource "aws_elastic_beanstalk_environment" "default" {
     name      = "NodeVersion"
     value     = "${var.nodejs_version}"
   }
+  ###===================== Application ENV vars ======================###
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "${element(keys(var.env_vars), 0)}"
+    value     = "${lookup(var.env_vars, element(keys(var.env_vars), 0), "DEFAULT_VALUE"}"
+  }
   ###===================== Application Load Balancer Health check settings =====================================================###
   # The Application Load Balancer health check does not take into account the Elastic Beanstalk health check path
   # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-applicationloadbalancer.html
