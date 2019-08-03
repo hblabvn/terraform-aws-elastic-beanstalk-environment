@@ -116,7 +116,7 @@ variable "loadbalancer_certificate_arn" {
 }
 
 variable "loadbalancer_ssl_policy" {
-  default     = ""
+  default     = "ELBSecurityPolicy-2016-08"
   description = "Specify a security policy to apply to the listener. This option is only applicable to environments with an application load balancer."
 }
 
@@ -349,16 +349,6 @@ variable "tags" {
   type        = "map"
   default     = {}
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
-}
-
-variable "env_default_key" {
-  default     = "DEFAULT_ENV_%d"
-  description = "Default ENV variable key for Elastic Beanstalk `aws:elasticbeanstalk:application:environment` setting"
-}
-
-variable "env_default_value" {
-  default     = "UNSET"
-  description = "Default ENV variable value for Elastic Beanstalk `aws:elasticbeanstalk:application:environment` setting"
 }
 
 variable "env_vars" {

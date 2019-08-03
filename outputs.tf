@@ -13,11 +13,6 @@ output "name" {
   description = "Name"
 }
 
-output "security_group_id" {
-  value       = "${aws_security_group.default.id}"
-  description = "Security group id"
-}
-
 output "elb_dns_name" {
   value       = "${aws_elastic_beanstalk_environment.default.cname}"
   description = "ELB technical host"
