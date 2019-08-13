@@ -510,131 +510,131 @@ resource "aws_elastic_beanstalk_environment" "default" {
     name      = "MaxSize"
     value     = "${var.autoscale_max}"
   }
-  setting {
-    namespace = "aws:elb:loadbalancer"
-    name      = "CrossZone"
-    value     = "true"
-  }
-  setting {
-    namespace = "aws:elb:loadbalancer"
-    name      = "SecurityGroups"
-    value     = "${join(",", var.loadbalancer_security_groups)}"
-  }
-  setting {
-    namespace = "aws:elb:loadbalancer"
-    name      = "ManagedSecurityGroup"
-    value     = "${var.loadbalancer_managed_security_group}"
-  }
+//  setting {
+//    namespace = "aws:elb:loadbalancer"
+//    name      = "CrossZone"
+//    value     = "true"
+//  }
+//  setting {
+//    namespace = "aws:elb:loadbalancer"
+//    name      = "SecurityGroups"
+//    value     = "${join(",", var.loadbalancer_security_groups)}"
+//  }
+//  setting {
+//    namespace = "aws:elb:loadbalancer"
+//    name      = "ManagedSecurityGroup"
+//    value     = "${var.loadbalancer_managed_security_group}"
+//  }
   setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBScheme"
     value     = "${var.environment_type == "LoadBalanced" ? var.elb_scheme : ""}"
   }
-  setting {
-    namespace = "aws:elb:listener"
-    name      = "ListenerProtocol"
-    value     = "HTTP"
-  }
-  setting {
-    namespace = "aws:elb:listener"
-    name      = "InstancePort"
-    value     = "${var.application_port}"
-  }
-  setting {
-    namespace = "aws:elb:listener"
-    name      = "ListenerEnabled"
-    value     = "${var.http_listener_enabled  == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "ListenerProtocol"
-    value     = "HTTPS"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "InstancePort"
-    value     = "${var.application_port}"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "SSLCertificateId"
-    value     = "${var.loadbalancer_certificate_arn}"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "ListenerEnabled"
-    value     = "${var.loadbalancer_certificate_arn == "" ? "false" : "true"}"
-  }
-  setting {
-    namespace = "aws:elb:listener:${var.ssh_listener_port}"
-    name      = "ListenerProtocol"
-    value     = "TCP"
-  }
-  setting {
-    namespace = "aws:elb:listener:${var.ssh_listener_port}"
-    name      = "InstancePort"
-    value     = "22"
-  }
-  setting {
-    namespace = "aws:elb:listener:${var.ssh_listener_port}"
-    name      = "ListenerEnabled"
-    value     = "${var.ssh_listener_enabled}"
-  }
-  setting {
-    namespace = "aws:elb:policies"
-    name      = "ConnectionSettingIdleTimeout"
-    value     = "${var.ssh_listener_enabled == "true" ? "3600" : "60"}"
-  }
-  setting {
-    namespace = "aws:elb:policies"
-    name      = "ConnectionDrainingEnabled"
-    value     = "true"
-  }
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Bucket"
-    value     = "${aws_s3_bucket.elb_logs.id}"
-  }
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Enabled"
-    value     = "true"
-  }
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "SecurityGroups"
-    value     = "${join(",", var.loadbalancer_security_groups)}"
-  }
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "ManagedSecurityGroup"
-    value     = "${var.loadbalancer_managed_security_group}"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:default"
-    name      = "ListenerEnabled"
-    value     = "${var.http_listener_enabled == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "ListenerEnabled"
-    value     = "${var.loadbalancer_certificate_arn == "" ? "false" : "true"}"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "Protocol"
-    value     = "HTTPS"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLCertificateArns"
-    value     = "${var.loadbalancer_certificate_arn}"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLPolicy"
-    value     = "${var.loadbalancer_type == "application" ? var.loadbalancer_ssl_policy : ""}"
-  }
+//  setting {
+//    namespace = "aws:elb:listener"
+//    name      = "ListenerProtocol"
+//    value     = "HTTP"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener"
+//    name      = "InstancePort"
+//    value     = "${var.application_port}"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener"
+//    name      = "ListenerEnabled"
+//    value     = "${var.http_listener_enabled  == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener:443"
+//    name      = "ListenerProtocol"
+//    value     = "HTTPS"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener:443"
+//    name      = "InstancePort"
+//    value     = "${var.application_port}"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener:443"
+//    name      = "SSLCertificateId"
+//    value     = "${var.loadbalancer_certificate_arn}"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener:443"
+//    name      = "ListenerEnabled"
+//    value     = "${var.loadbalancer_certificate_arn == "" ? "false" : "true"}"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener:${var.ssh_listener_port}"
+//    name      = "ListenerProtocol"
+//    value     = "TCP"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener:${var.ssh_listener_port}"
+//    name      = "InstancePort"
+//    value     = "22"
+//  }
+//  setting {
+//    namespace = "aws:elb:listener:${var.ssh_listener_port}"
+//    name      = "ListenerEnabled"
+//    value     = "${var.ssh_listener_enabled}"
+//  }
+//  setting {
+//    namespace = "aws:elb:policies"
+//    name      = "ConnectionSettingIdleTimeout"
+//    value     = "${var.ssh_listener_enabled == "true" ? "3600" : "60"}"
+//  }
+//  setting {
+//    namespace = "aws:elb:policies"
+//    name      = "ConnectionDrainingEnabled"
+//    value     = "true"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:loadbalancer"
+//    name      = "AccessLogsS3Bucket"
+//    value     = "${aws_s3_bucket.elb_logs.id}"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:loadbalancer"
+//    name      = "AccessLogsS3Enabled"
+//    value     = "true"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:loadbalancer"
+//    name      = "SecurityGroups"
+//    value     = "${join(",", var.loadbalancer_security_groups)}"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:loadbalancer"
+//    name      = "ManagedSecurityGroup"
+//    value     = "${var.loadbalancer_managed_security_group}"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:listener:default"
+//    name      = "ListenerEnabled"
+//    value     = "${var.http_listener_enabled == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:listener:443"
+//    name      = "ListenerEnabled"
+//    value     = "${var.loadbalancer_certificate_arn == "" ? "false" : "true"}"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:listener:443"
+//    name      = "Protocol"
+//    value     = "HTTPS"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:listener:443"
+//    name      = "SSLCertificateArns"
+//    value     = "${var.loadbalancer_certificate_arn}"
+//  }
+//  setting {
+//    namespace = "aws:elbv2:listener:443"
+//    name      = "SSLPolicy"
+//    value     = "${var.loadbalancer_type == "application" ? var.loadbalancer_ssl_policy : ""}"
+//  }
   setting {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
     name      = "ConfigDocument"
