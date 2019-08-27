@@ -381,3 +381,12 @@ variable "elb_scheme" {
   default     = "public"
   description = "Specify `internal` if you want to create an internal load balancer in your Amazon VPC so that your Elastic Beanstalk application cannot be accessed from outside your Amazon VPC"
 }
+
+### Added vars for iam_roles module:
+variable "project_env" { default = "Production" }
+variable "project_env_short" { default = "prd" }
+variable "temp_file_assumerole" { default = "" }
+variable "temp_file_policy" { default = "" }
+variable "iam_instance_profile" { default = "" }
+variable "service_name" { default = "" }
+variable "ssm_enabled" { default = true }
