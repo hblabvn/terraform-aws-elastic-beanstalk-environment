@@ -24,7 +24,7 @@ output "elb_zone_id" {
 }
 
 output "ec2_instance_profile_role_name" {
-  value       = "${aws_iam_role.ec2.name}"
+  value       = "${var.iam_instance_profile == "" ? module.iam_roles.iam_instance_profile : var.iam_instance_profile}"
   description = "Instance IAM role name"
 }
 
