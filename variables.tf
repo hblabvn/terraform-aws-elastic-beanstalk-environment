@@ -105,11 +105,6 @@ variable "environment_type" {
   description = "Environment type, e.g. 'LoadBalanced' or 'SingleInstance'.  If setting to 'SingleInstance', `rolling_update_type` must be set to 'Time', `updating_min_in_service` must be set to 0, and `public_subnets` will be unused (it applies to the ELB, which does not exist in SingleInstance environments)"
 }
 
-variable "loadbalancer_type" {
-  default     = "classic"
-  description = "Load Balancer type, e.g. 'application' or 'classic'"
-}
-
 variable "loadbalancer_certificate_arn" {
   default     = ""
   description = "Load Balancer SSL certificate ARN. The certificate must be present in AWS Certificate Manager"
@@ -118,18 +113,6 @@ variable "loadbalancer_certificate_arn" {
 variable "loadbalancer_ssl_policy" {
   default     = "ELBSecurityPolicy-2016-08"
   description = "Specify a security policy to apply to the listener. This option is only applicable to environments with an application load balancer."
-}
-
-variable "loadbalancer_security_groups" {
-  type        = "list"
-  default     = []
-  description = "Load balancer security groups"
-}
-
-variable "loadbalancer_managed_security_group" {
-  type        = "string"
-  default     = ""
-  description = "Load balancer managed security group"
 }
 
 variable "http_listener_enabled" {

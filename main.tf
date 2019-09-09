@@ -259,56 +259,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
     value     = "${var.environment_type == "LoadBalanced" ? var.elb_scheme : ""}"
   }
   setting {
-    namespace = "aws:elb:listener"
-    name      = "ListenerProtocol"
-    value     = "HTTP"
-  }
-  setting {
-    namespace = "aws:elb:listener"
-    name      = "InstancePort"
-    value     = "${var.application_port}"
-  }
-  setting {
-    namespace = "aws:elb:listener"
-    name      = "ListenerEnabled"
-    value     = "${var.http_listener_enabled  == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "ListenerProtocol"
-    value     = "HTTPS"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "InstancePort"
-    value     = "${var.application_port}"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "SSLCertificateId"
-    value     = "${var.loadbalancer_certificate_arn}"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "ListenerEnabled"
-    value     = "${var.loadbalancer_certificate_arn == "" ? "false" : "true"}"
-  }
-  setting {
-    namespace = "aws:elb:listener:${var.ssh_listener_port}"
-    name      = "ListenerProtocol"
-    value     = "TCP"
-  }
-  setting {
-    namespace = "aws:elb:listener:${var.ssh_listener_port}"
-    name      = "InstancePort"
-    value     = "22"
-  }
-  setting {
-    namespace = "aws:elb:listener:${var.ssh_listener_port}"
-    name      = "ListenerEnabled"
-    value     = "${var.ssh_listener_enabled}"
-  }
-  setting {
     namespace = "aws:elb:policies"
     name      = "ConnectionSettingIdleTimeout"
     value     = "${var.ssh_listener_enabled == "true" ? "3600" : "60"}"
@@ -329,16 +279,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
     value     = "true"
   }
   setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "SecurityGroups"
-    value     = "${join(",", var.loadbalancer_security_groups)}"
-  }
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "ManagedSecurityGroup"
-    value     = "${var.loadbalancer_managed_security_group}"
-  }
-  setting {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
     value     = "${var.http_listener_enabled == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
@@ -351,7 +291,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elbv2:listener:443"
     name      = "Protocol"
-    value     = "HTTPS"
+    value     = "TCP"
   }
   setting {
     namespace = "aws:elbv2:listener:443"
@@ -359,69 +299,9 @@ resource "aws_elastic_beanstalk_environment" "default" {
     value     = "${var.loadbalancer_certificate_arn}"
   }
   setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLPolicy"
-    value     = "${var.loadbalancer_type == "application" ? var.loadbalancer_ssl_policy : ""}"
-  }
-  setting {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
     name      = "ConfigDocument"
     value     = "${var.config_document}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:application"
-    name      = "Application Healthcheck URL"
-    value     = "HTTP:${var.application_port}${var.healthcheck_url}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "EnvironmentType"
-    value     = "${var.environment_type}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "LoadBalancerType"
-    value     = "${var.loadbalancer_type}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "ServiceRole"
-    value     = "${var.service_name == "" ? module.iam_roles.service_name : var.service_name}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:healthreporting:system"
-    name      = "SystemType"
-    value     = "${var.enhanced_reporting_enabled ? "enhanced" : "basic"}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:command"
-    name      = "BatchSizeType"
-    value     = "Fixed"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:command"
-    name      = "BatchSize"
-    value     = "1"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "BASE_HOST"
-    value     = "${var.name}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "CONFIG_SOURCE"
-    value     = "${var.config_source}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:managedactions"
-    name      = "ManagedActionsEnabled"
-    value     = "${var.enable_managed_actions ? "true" : "false"}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:managedactions"
-    name      = "PreferredStartTime"
-    value     = "${var.preferred_start_time}"
   }
   setting {
     namespace = "aws:elasticbeanstalk:managedactions:platformupdate"
@@ -444,49 +324,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
     name      = "${element(keys(var.env_vars), 0)}"
     value     = "${lookup(var.env_vars, element(keys(var.env_vars), 0), "DEFAULT_VALUE")}"
   }
-  ###===================== Application Load Balancer Health check settings =====================================================###
-  # The Application Load Balancer health check does not take into account the Elastic Beanstalk health check path
-  # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-applicationloadbalancer.html
-  # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-applicationloadbalancer.html#alb-default-process.config
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "HealthCheckPath"
-    value     = "${var.healthcheck_url}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "Port"
-    value     = "${var.application_port}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "Protocol"
-    value     = "HTTP"
-  }
-  ###===================== Load Balancer stickiness settings =====================================================###
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "StickinessEnabled"
-    value     = "${var.stickiness_enabled}"
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "StickinessLBCookieDuration"
-    value     = "${var.stickiness_lb_cookie_duration}"
-  }
-  # This should make it work with Classic Load balancer
-  # https://github.com/terraform-providers/terraform-provider-aws/issues/4000
-  setting {
-    namespace = "aws:elb:policies"
-    name      = "Stickiness Policy"
-    value     = "${var.stickiness_enabled}"
-  }
-  setting {
-    namespace = "aws:elb:policies"
-    name      = "Stickiness Cookie Expiration"
-    value     = "${var.stickiness_lb_cookie_duration}"
-  }
-
   ###===================== Notification =====================================================###
 
   setting {
@@ -539,14 +376,4 @@ resource "aws_s3_bucket" "elb_logs" {
   acl           = "private"
   force_destroy = "${var.force_destroy}"
   policy        = "${data.aws_iam_policy_document.elb_logs.json}"
-}
-
-module "tld" {
-  source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.5"
-  namespace = "${var.namespace}"
-  name      = "${var.name}"
-  stage     = "${var.stage}"
-  zone_id   = "${var.zone_id}"
-  records   = ["${aws_elastic_beanstalk_environment.default.cname}"]
-  enabled   = "${length(var.zone_id) > 0 ? "true" : "false"}"
 }
