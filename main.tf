@@ -101,7 +101,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elasticbeanstalk:command"
     name      = "DeploymentPolicy"
-    value     = "${var.rolling_update_type == "Immutable" ? "Immutable" : "Rolling"}"
+    value     = "${var.rolling_update_type == "Immutable" ? "Immutable" : "${var.deploy_policy}"}"
   }
 
   setting {
@@ -244,16 +244,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
     value     = "true"
   }
   setting {
-    namespace = "aws:elb:loadbalancer"
-    name      = "SecurityGroups"
-    value     = "${join(",", var.loadbalancer_security_groups)}"
-  }
-  setting {
-    namespace = "aws:elb:loadbalancer"
-    name      = "ManagedSecurityGroup"
-    value     = "${var.loadbalancer_managed_security_group}"
-  }
-  setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBScheme"
     value     = "${var.environment_type == "LoadBalanced" ? var.elb_scheme : ""}"
@@ -274,19 +264,14 @@ resource "aws_elastic_beanstalk_environment" "default" {
     value     = "${aws_s3_bucket.elb_logs.id}"
   }
   setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Enabled"
-    value     = "true"
-  }
-  setting {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
-    value     = "${var.http_listener_enabled == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
+    value     = "${var.http_listener_enabled == "true" ? "true" : "false"}"
   }
   setting {
     namespace = "aws:elbv2:listener:443"
     name      = "ListenerEnabled"
-    value     = "${var.loadbalancer_certificate_arn == "" ? "false" : "true"}"
+    value     = "true"
   }
   setting {
     namespace = "aws:elbv2:listener:443"
@@ -294,14 +279,44 @@ resource "aws_elastic_beanstalk_environment" "default" {
     value     = "TCP"
   }
   setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLCertificateArns"
-    value     = "${var.loadbalancer_certificate_arn}"
-  }
-  setting {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
     name      = "ConfigDocument"
     value     = "${var.config_document}"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "EnvironmentType"
+    value     = "${var.environment_type}"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = "network"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "ServiceRole"
+    value     = "${var.service_name == "" ? module.iam_roles.service_name : var.service_name}"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:healthreporting:system"
+    name      = "SystemType"
+    value     = "${var.enhanced_reporting_enabled ? "enhanced" : "basic"}"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:command"
+    name      = "BatchSizeType"
+    value     = "Fixed"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:command"
+    name      = "BatchSize"
+    value     = "1"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "BASE_HOST"
+    value     = "${var.name}"
   }
   setting {
     namespace = "aws:elasticbeanstalk:managedactions:platformupdate"
@@ -352,19 +367,63 @@ data "aws_elb_service_account" "main" {}
 
 data "aws_iam_policy_document" "elb_logs" {
   statement {
-    sid = ""
+    sid = "AWSConsoleStmt"
 
     actions = [
       "s3:PutObject",
     ]
 
     resources = [
-      "arn:aws:s3:::${module.label.id}-logs/*",
+      "arn:aws:s3:::${module.label.id}-logs/AWSLogs/*",
     ]
 
     principals {
       type        = "AWS"
       identifiers = ["${data.aws_elb_service_account.main.arn}"]
+    }
+
+    effect = "Allow"
+
+  }
+
+  statement {
+    sid = "AWSLogDeliveryWrite"
+
+    actions = [
+      "s3:PutObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${module.label.id}-logs/AWSLogs/*",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
+    }
+
+    effect = "Allow"
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+      values   = ["bucket-owner-full-control"]
+    }
+  }
+
+  statement {
+    sid = "AWSLogDeliveryAclCheck"
+
+    actions = [
+      "s3:GetBucketAcl",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${module.label.id}-logs",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
     }
 
     effect = "Allow"

@@ -105,16 +105,6 @@ variable "environment_type" {
   description = "Environment type, e.g. 'LoadBalanced' or 'SingleInstance'.  If setting to 'SingleInstance', `rolling_update_type` must be set to 'Time', `updating_min_in_service` must be set to 0, and `public_subnets` will be unused (it applies to the ELB, which does not exist in SingleInstance environments)"
 }
 
-variable "loadbalancer_certificate_arn" {
-  default     = ""
-  description = "Load Balancer SSL certificate ARN. The certificate must be present in AWS Certificate Manager"
-}
-
-variable "loadbalancer_ssl_policy" {
-  default     = "ELBSecurityPolicy-2016-08"
-  description = "Specify a security policy to apply to the listener. This option is only applicable to environments with an application load balancer."
-}
-
 variable "http_listener_enabled" {
   default     = "false"
   description = "Enable port 80 (http)"
@@ -215,6 +205,11 @@ variable "root_volume_type" {
 variable "availability_zones" {
   default     = "Any 2"
   description = "Choose the number of AZs for your instances"
+}
+
+variable "deploy_policy" {
+  default     = "AllAtOnce"
+  description = "DeploymentPolicy: AllAtOnce, Immutable, Rolling"
 }
 
 variable "rolling_update_type" {
