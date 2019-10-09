@@ -274,26 +274,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
     value     = "${var.http_listener_enabled  == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
   }
   setting {
-    namespace = "aws:elb:listener:443"
-    name      = "ListenerProtocol"
-    value     = "HTTPS"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "InstancePort"
-    value     = "${var.application_port}"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "SSLCertificateId"
-    value     = "${var.loadbalancer_certificate_arn}"
-  }
-  setting {
-    namespace = "aws:elb:listener:443"
-    name      = "ListenerEnabled"
-    value     = "${var.loadbalancer_certificate_arn == "" ? "false" : "true"}"
-  }
-  setting {
     namespace = "aws:elb:listener:${var.ssh_listener_port}"
     name      = "ListenerProtocol"
     value     = "TCP"
@@ -342,26 +322,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
     value     = "${var.http_listener_enabled == "true" || var.loadbalancer_certificate_arn == "" ? "true" : "false"}"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "ListenerEnabled"
-    value     = "${var.loadbalancer_certificate_arn == "" ? "false" : "true"}"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "Protocol"
-    value     = "HTTPS"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLCertificateArns"
-    value     = "${var.loadbalancer_certificate_arn}"
-  }
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLPolicy"
-    value     = "${var.loadbalancer_type == "application" ? var.loadbalancer_ssl_policy : ""}"
   }
   setting {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
