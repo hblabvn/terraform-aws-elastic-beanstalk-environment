@@ -177,6 +177,11 @@ variable "nodejs_version" {
   description = "Elastic Beanstalk NodeJS version to deploy"
 }
 
+variable "iam_instance_profile" {
+  default     = ""
+  description = "IAM instance profile for webserver"
+}
+
 variable "wait_for_ready_timeout" {
   type        = string
   default     = "20m"
