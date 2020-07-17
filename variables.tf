@@ -172,6 +172,11 @@ variable "solution_stack_name" {
   description = "Elastic Beanstalk stack, e.g. Docker, Go, Node, Java, IIS. For more info, see https://docs.aws.amazon.com/elasticbeanstalk/latest/platforms/platforms-supported.html"
 }
 
+variable "nodejs_version" {
+  default     = ""
+  description = "Elastic Beanstalk NodeJS version to deploy"
+}
+
 variable "wait_for_ready_timeout" {
   type        = string
   default     = "20m"
