@@ -533,7 +533,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = "${var.iam_instance_profile == "" ? module.iam_roles.iam_instance_profile : var.iam_instance_profile}"
+    value     = var.iam_instance_profile
     resource  = ""
   }
 
@@ -554,7 +554,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "ServiceRole"
-    value     = "${var.iam_instance_profile == "" ? module.iam_roles.iam_instance_profile : var.iam_instance_profile}"
+    value     = var.iam_instance_profile
     resource  = ""
   }
 
