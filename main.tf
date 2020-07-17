@@ -49,11 +49,6 @@ locals {
       name      = "CrossZone"
       value     = "true"
     },
-    {
-      namespace = "aws:elb:loadbalancer"
-      name      = "SecurityGroups"
-      value     = join(",", sort(var.loadbalancer_security_groups))
-    },
 
     {
       namespace = "aws:elb:listener"
