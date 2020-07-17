@@ -1,8 +1,3 @@
-output "hostname" {
-  value       = module.dns_hostname.hostname
-  description = "DNS hostname"
-}
-
 output "id" {
   description = "ID of the Elastic Beanstalk environment"
   value       = aws_elastic_beanstalk_environment.default.id
