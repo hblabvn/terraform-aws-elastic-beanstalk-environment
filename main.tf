@@ -386,21 +386,21 @@ locals {
       name      = "ListenerProtocol"
       value     = "TCP"
     },
-    {
-      namespace = "aws:elb:listener:${var.ssh_listener_port}"
-      name      = "InstancePort"
-      value     = "22"
-    },
-    {
-      namespace = "aws:elb:listener:${var.ssh_listener_port}"
-      name      = "ListenerEnabled"
-      value     = var.ssh_listener_enabled
-    },
-    {
-      namespace = "aws:elb:policies"
-      name      = "ConnectionSettingIdleTimeout"
-      value     = var.ssh_listener_enabled ? "3600" : "60"
-    },
+    # {
+    #   namespace = "aws:elb:listener:${var.ssh_listener_port}"
+    #   name      = "InstancePort"
+    #   value     = "22"
+    # },
+    # {
+    #   namespace = "aws:elb:listener:${var.ssh_listener_port}"
+    #   name      = "ListenerEnabled"
+    #   value     = var.ssh_listener_enabled
+    # },
+    # {
+    #   namespace = "aws:elb:policies"
+    #   name      = "ConnectionSettingIdleTimeout"
+    #   value     = var.ssh_listener_enabled ? "3600" : "60"
+    # },
     {
       namespace = "aws:elb:policies"
       name      = "ConnectionDrainingEnabled"
