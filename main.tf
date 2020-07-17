@@ -54,11 +54,6 @@ locals {
       name      = "SecurityGroups"
       value     = join(",", sort(var.loadbalancer_security_groups))
     },
-    {
-      namespace = "aws:elb:loadbalancer"
-      name      = "ManagedSecurityGroup"
-      value     = var.loadbalancer_managed_security_group
-    },
 
     {
       namespace = "aws:elb:listener"
