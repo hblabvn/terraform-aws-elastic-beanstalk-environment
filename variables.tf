@@ -274,6 +274,26 @@ variable "logs_retention_in_days" {
   description = "The number of days to keep log events before they expire."
 }
 
+variable "notification_protocol" {
+  default     = "email"
+  description = "Notification protocol"
+}
+
+variable "notification_endpoint" {
+  default     = ""
+  description = "Notification endpoint"
+}
+
+variable "notification_topic_arn" {
+  default     = ""
+  description = "Notification topic arn"
+}
+
+variable "notification_topic_name" {
+  default     = ""
+  description = "Notification topic name"
+}
+
 variable "loadbalancer_certificate_arn" {
   type        = string
   default     = ""

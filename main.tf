@@ -680,15 +680,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
     resource  = ""
   }
 
-  # dynamic "setting" {
-  #   for_each = var.ami_id == null ? [] : [var.ami_id]
-  #   content {
-  #     namespace = "aws:autoscaling:launchconfiguration"
-  #     name      = "ImageId"
-  #     value     = setting.value
-  #   }
-  # }
-
   setting {
     namespace = "aws:elasticbeanstalk:command"
     name      = "BatchSizeType"
@@ -736,6 +727,35 @@ resource "aws_elastic_beanstalk_environment" "default" {
     name      = "InstanceRefreshEnabled"
     value     = var.instance_refresh_enabled
     resource  = ""
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:container:nodejs"
+    name      = "NodeVersion"
+    value     = "${var.nodejs_version}"
+  }
+
+  ###===================== Notification =====================================================###
+
+  setting {
+    namespace = "aws:elasticbeanstalk:sns:topics"
+    name      = "Notification Endpoint"
+    value     = "${var.notification_endpoint}"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:sns:topics"
+    name      = "Notification Protocol"
+    value     = "${var.notification_protocol}"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:sns:topics"
+    name      = "Notification Topic ARN"
+    value     = "${var.notification_topic_arn}"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:sns:topics"
+    name      = "Notification Topic Name"
+    value     = "${var.notification_topic_name}"
   }
 
   ###=========================== Autoscale trigger ========================== ###
