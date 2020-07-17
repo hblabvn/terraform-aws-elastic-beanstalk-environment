@@ -182,6 +182,11 @@ variable "iam_instance_profile" {
   description = "IAM instance profile for webserver"
 }
 
+variable "iam_service_role" {
+  default     = ""
+  description = "IAM EB role"
+}
+
 variable "wait_for_ready_timeout" {
   type        = string
   default     = "20m"
