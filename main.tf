@@ -22,7 +22,7 @@ resource "aws_security_group" "default" {
   ingress {
     from_port       = 22
     to_port         = 22
-    protocol        = tcp
+    protocol        = "tcp"
     security_groups = var.allowed_security_groups
   }
 
