@@ -1,5 +1,5 @@
 module "label" {
-  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.15.0"
+  source      = "git::https://github.com/hblabvn/terraform-null-label.git?ref=tags/0.15.0"
   namespace   = var.namespace
   environment = var.environment
   name        = var.name
@@ -456,11 +456,11 @@ locals {
   ]
 
   generic_elb_settings = [
-    {
-      namespace = "aws:ec2:vpc"
-      name      = "ELBSubnets"
-      value     = join(",", sort(var.loadbalancer_subnets))
-    },
+    # {
+    #   namespace = "aws:ec2:vpc"
+    #   name      = "ELBSubnets"
+    #   value     = join(",", sort(var.loadbalancer_subnets))
+    # },
 
     {
       namespace = "aws:ec2:vpc"
@@ -477,11 +477,11 @@ locals {
     # The Application Load Balancer health check does not take into account the Elastic Beanstalk health check path
     # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-applicationloadbalancer.html
     # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-applicationloadbalancer.html#alb-default-process.config
-    {
-      namespace = "aws:elasticbeanstalk:environment:process:default"
-      name      = "HealthCheckPath"
-      value     = var.healthcheck_url
-    },
+    # {
+    #   namespace = "aws:elasticbeanstalk:environment:process:default"
+    #   name      = "HealthCheckPath"
+    #   value     = var.healthcheck_url
+    # },
     {
       namespace = "aws:elasticbeanstalk:environment:process:default"
       name      = "Port"
@@ -490,7 +490,7 @@ locals {
     {
       namespace = "aws:elasticbeanstalk:environment:process:default"
       name      = "Protocol"
-      value     = "HTTP"
+      value     = "TCP"
     }
   ]
 
