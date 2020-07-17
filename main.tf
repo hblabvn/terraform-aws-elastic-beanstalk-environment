@@ -409,26 +409,6 @@ locals {
   ]
   alb_settings = [
     {
-      namespace = "aws:elbv2:loadbalancer"
-      name      = "AccessLogsS3Bucket"
-      value     = join("", sort(aws_s3_bucket.elb_logs.*.id))
-    },
-    {
-      namespace = "aws:elbv2:loadbalancer"
-      name      = "AccessLogsS3Enabled"
-      value     = "true"
-    },
-    {
-      namespace = "aws:elbv2:loadbalancer"
-      name      = "SecurityGroups"
-      value     = join(",", sort(var.loadbalancer_security_groups))
-    },
-    {
-      namespace = "aws:elbv2:loadbalancer"
-      name      = "ManagedSecurityGroup"
-      value     = var.loadbalancer_managed_security_group
-    },
-    {
       namespace = "aws:elbv2:listener:default"
       name      = "ListenerEnabled"
       value     = var.http_listener_enabled || var.loadbalancer_certificate_arn == "" ? "true" : "false"
@@ -700,14 +680,14 @@ resource "aws_elastic_beanstalk_environment" "default" {
     resource  = ""
   }
 
-  dynamic "setting" {
-    for_each = var.ami_id == null ? [] : [var.ami_id]
-    content {
-      namespace = "aws:autoscaling:launchconfiguration"
-      name      = "ImageId"
-      value     = setting.value
-    }
-  }
+  # dynamic "setting" {
+  #   for_each = var.ami_id == null ? [] : [var.ami_id]
+  #   content {
+  #     namespace = "aws:autoscaling:launchconfiguration"
+  #     name      = "ImageId"
+  #     value     = setting.value
+  #   }
+  # }
 
   setting {
     namespace = "aws:elasticbeanstalk:command"
@@ -886,43 +866,4 @@ resource "aws_elastic_beanstalk_environment" "default" {
 
 data "aws_elb_service_account" "main" {
   count = var.tier == "WebServer" ? 1 : 0
-}
-
-data "aws_iam_policy_document" "elb_logs" {
-  count = var.tier == "WebServer" ? 1 : 0
-
-  statement {
-    sid = ""
-
-    actions = [
-      "s3:PutObject",
-    ]
-
-    resources = [
-      "arn:aws:s3:::${module.label.id}-eb-loadbalancer-logs/*"
-    ]
-
-    principals {
-      type        = "AWS"
-      identifiers = [join("", data.aws_elb_service_account.main.*.arn)]
-    }
-
-    effect = "Allow"
-  }
-}
-
-resource "aws_s3_bucket" "elb_logs" {
-  count         = var.tier == "WebServer" ? 1 : 0
-  bucket        = "${module.label.id}-eb-loadbalancer-logs"
-  acl           = "private"
-  force_destroy = var.force_destroy
-  policy        = join("", data.aws_iam_policy_document.elb_logs.*.json)
-}
-
-module "dns_hostname" {
-  source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.3.0"
-  enabled = var.dns_zone_id != "" && var.tier == "WebServer" ? true : false
-  name    = var.dns_subdomain != "" ? var.dns_subdomain : var.name
-  zone_id = var.dns_zone_id
-  records = [aws_elastic_beanstalk_environment.default.cname]
 }

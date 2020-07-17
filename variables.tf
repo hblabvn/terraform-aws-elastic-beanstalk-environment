@@ -63,7 +63,7 @@ variable "environment_type" {
 
 variable "loadbalancer_type" {
   type        = string
-  default     = "classic"
+  default     = ""
   description = "Load Balancer type, e.g. 'application' or 'classic'"
 }
 
@@ -157,13 +157,13 @@ variable "managed_actions_enabled" {
 
 variable "autoscale_min" {
   type        = number
-  default     = 2
+  default     = 0
   description = "Minumum instances to launch"
 }
 
 variable "autoscale_max" {
   type        = number
-  default     = 3
+  default     = 0
   description = "Maximum instances to launch"
 }
 
