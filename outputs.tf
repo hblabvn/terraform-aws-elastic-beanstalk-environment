@@ -18,11 +18,6 @@ output "elb_zone_id" {
   description = "ELB zone id"
 }
 
-output "ec2_instance_profile_role_name" {
-  value       = aws_iam_role.ec2.name
-  description = "Instance IAM role name"
-}
-
 output "tier" {
   description = "The environment tier"
   value       = aws_elastic_beanstalk_environment.default.tier
