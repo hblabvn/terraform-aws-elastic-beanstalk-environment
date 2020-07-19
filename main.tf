@@ -330,7 +330,7 @@ resource "aws_iam_instance_profile" "ec2" {
 }
 
 resource "aws_security_group" "default" {
-  count = length(allowed_security_groups) > 0 ? 1 : 0
+  count = length(var.allowed_security_groups) > 0 ? 1 : 0
 
   name        = module.label.id
   description = "Allow inbound traffic from provided Security Groups"
