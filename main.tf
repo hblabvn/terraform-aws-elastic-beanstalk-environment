@@ -585,7 +585,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = aws_iam_instance_profile.ec2.name
+    value     = coalesce(var.iam_instance_profile, aws_iam_instance_profile.ec2[0].name)
     resource  = ""
   }
 
@@ -606,7 +606,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "ServiceRole"
-    value     = aws_iam_role.service.name
+    value     = coalesce(var.iam_service_role, aws_iam_role.service[0].name)
     resource  = ""
   }
 
