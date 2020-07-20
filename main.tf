@@ -43,88 +43,12 @@ locals {
   // https://github.com/terraform-providers/terraform-provider-aws/issues/3963
   tags = { for t in keys(module.label.tags) : t => module.label.tags[t] if t != "Name" && t != "Namespace" }
 
-  classic_elb_settings = [
-    {
-      namespace = "aws:elb:loadbalancer"
-      name      = "CrossZone"
-      value     = "true"
-    },
-
-    {
-      namespace = "aws:elb:listener"
-      name      = "ListenerProtocol"
-      value     = "HTTP"
-    },
-    {
-      namespace = "aws:elb:listener"
-      name      = "InstancePort"
-      value     = var.application_port
-    },
-    {
-      namespace = "aws:elb:listener"
-      name      = "ListenerEnabled"
-      value     = var.http_listener_enabled || var.loadbalancer_certificate_arn == "" ? "true" : "false"
-    },
-    {
-      namespace = "aws:elb:listener:443"
-      name      = "ListenerProtocol"
-      value     = "HTTPS"
-    },
-    {
-      namespace = "aws:elb:listener:443"
-      name      = "InstancePort"
-      value     = var.application_port
-    },
-    {
-      namespace = "aws:elb:listener:443"
-      name      = "SSLCertificateId"
-      value     = var.loadbalancer_certificate_arn
-    },
-    {
-      namespace = "aws:elb:listener:443"
-      name      = "ListenerEnabled"
-      value     = var.loadbalancer_certificate_arn == "" ? "false" : "true"
-    },
-    {
-      namespace = "aws:elb:policies"
-      name      = "ConnectionDrainingEnabled"
-      value     = "true"
-    },
-  ]
-  alb_settings = [
-    {
-      namespace = "aws:elbv2:listener:default"
-      name      = "ListenerEnabled"
-      value     = var.http_listener_enabled || var.loadbalancer_certificate_arn == "" ? "true" : "false"
-    },
-    {
-      namespace = "aws:elbv2:listener:443"
-      name      = "ListenerEnabled"
-      value     = var.loadbalancer_certificate_arn == "" ? "false" : "true"
-    },
-    {
-      namespace = "aws:elbv2:listener:443"
-      name      = "Protocol"
-      value     = "HTTPS"
-    },
-    {
-      namespace = "aws:elbv2:listener:443"
-      name      = "SSLCertificateArns"
-      value     = var.loadbalancer_certificate_arn
-    },
-    {
-      namespace = "aws:elbv2:listener:443"
-      name      = "SSLPolicy"
-      value     = var.loadbalancer_type == "application" ? var.loadbalancer_ssl_policy : ""
-    }
-  ]
-
   generic_elb_settings = [
-    # {
-    #   namespace = "aws:ec2:vpc"
-    #   name      = "ELBSubnets"
-    #   value     = join(",", sort(var.loadbalancer_subnets))
-    # },
+    {
+      namespace = "aws:ec2:vpc"
+      name      = "ELBSubnets"
+      value     = join(",", sort(var.loadbalancer_subnets))
+    },
 
     {
       namespace = "aws:ec2:vpc"
@@ -153,9 +77,6 @@ locals {
       value     = "TCP"
     }
   ]
-
-  # If the tier is "WebServer" add the elb_settings, otherwise exclude them
-  elb_settings_final = var.tier == "WebServer" ? var.loadbalancer_type == "application" ? concat(local.alb_settings, local.generic_elb_settings) : concat(local.classic_elb_settings, local.generic_elb_settings) : []
 }
 
 #
@@ -171,16 +92,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
   wait_for_ready_timeout = var.wait_for_ready_timeout
   version_label          = var.version_label
   tags                   = local.tags
-
-  dynamic "setting" {
-    for_each = local.elb_settings_final
-    content {
-      namespace = setting.value["namespace"]
-      name      = setting.value["name"]
-      value     = setting.value["value"]
-      resource  = ""
-    }
-  }
 
   setting {
     namespace = "aws:ec2:vpc"
