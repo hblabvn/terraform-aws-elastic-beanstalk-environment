@@ -326,6 +326,24 @@ resource "aws_elastic_beanstalk_environment" "default" {
     value     = "${var.nodejs_version}"
   }
 
+  {
+    namespace = "aws:elbv2:listener:443"
+    name      = "Protocol"
+    value     = "TCP"
+  }
+
+  {
+    namespace = "aws:elb:loadbalancer"
+    name      = "CrossZone"
+    value     = "true"
+  }
+
+  {
+    namespace = "aws:elb:policies"
+    name      = "ConnectionDrainingEnabled"
+    value     = "true"
+  }
+
   ###===================== Notification =====================================================###
 
   setting {
