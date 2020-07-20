@@ -585,7 +585,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = coalesce(var.iam_instance_profile, aws_iam_instance_profile.ec2[0].name)
+    value     = coalesce(var.iam_instance_profile, concat(aws_iam_instance_profile.ec2[0].name, [""][0]))
     resource  = ""
   }
 
