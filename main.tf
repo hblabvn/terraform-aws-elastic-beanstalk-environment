@@ -272,18 +272,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
     name      = "NodeVersion"
     value     = "${var.nodejs_version}"
   }
-  
-  # setting {
-  #   namespace = "aws:elasticbeanstalk:environment:process:default"
-  #   name      = "Port"
-  #   value     = var.application_port
-  # }
-
-  # setting {
-  #   namespace = "aws:elasticbeanstalk:environment:process:default"
-  #   name      = "Protocol"
-  #   value     = "TCP"
-  # }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment"
@@ -324,7 +312,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elbv2:listener:443"
     name      = "Protocol"
-    value     = "TCP"
+    value     = var.lb_listener_protocol
   }
 
   setting {
