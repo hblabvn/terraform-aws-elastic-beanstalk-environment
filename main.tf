@@ -13,7 +13,7 @@ module "label" {
 # Service
 #
 data "aws_iam_policy_document" "service" {
-  count = var.iam_service_role == "" ? 0 : 1
+  count = var.iam_service_role == "" ? 1 : 0
 
   statement {
     actions = [
@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "service" {
 }
 
 resource "aws_iam_role" "service" {
-  count = var.iam_service_role == "" ? 0 : 1
+  count = var.iam_service_role == "" ? 1 : 0
 
   name               = "${module.label.id}-eb-service"
   assume_role_policy = data.aws_iam_policy_document.service[0].json
@@ -43,7 +43,7 @@ resource "aws_iam_role_policy_attachment" "enhanced_health" {
 }
 
 resource "aws_iam_role_policy_attachment" "service" {
-  count = var.iam_service_role == "" ? 0 : 1
+  count = var.iam_service_role == "" ? 1 : 0
 
   role       = aws_iam_role.service[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkService"
@@ -53,7 +53,7 @@ resource "aws_iam_role_policy_attachment" "service" {
 # EC2
 #
 data "aws_iam_policy_document" "ec2" {
-  count = var.iam_instance_profile == "" ? 0 : 1
+  count = var.iam_instance_profile == "" ? 1 : 0
 
   statement {
     sid = ""
@@ -87,21 +87,21 @@ data "aws_iam_policy_document" "ec2" {
 }
 
 resource "aws_iam_role_policy_attachment" "elastic_beanstalk_multi_container_docker" {
-  count = var.iam_instance_profile == "" ? 0 : 1
+  count = var.iam_instance_profile == "" ? 1 : 0
 
   role       = aws_iam_role.ec2[0].name
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
 }
 
 resource "aws_iam_role" "ec2" {
-  count = var.iam_instance_profile == "" ? 0 : 1
+  count = var.iam_instance_profile == "" ? 1 : 0
 
   name               = "${module.label.id}-eb-ec2"
   assume_role_policy = data.aws_iam_policy_document.ec2[0].json
 }
 
 resource "aws_iam_role_policy" "default" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   name   = "${module.label.id}-eb-default"
   role   = aws_iam_role.ec2[0].id
@@ -109,21 +109,21 @@ resource "aws_iam_role_policy" "default" {
 }
 
 resource "aws_iam_role_policy_attachment" "web_tier" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   role       = aws_iam_role.ec2[0].name
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
 }
 
 resource "aws_iam_role_policy_attachment" "worker_tier" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   role       = aws_iam_role.ec2[0].name
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_ec2" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   role       = aws_iam_role.ec2[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
@@ -134,7 +134,7 @@ resource "aws_iam_role_policy_attachment" "ssm_ec2" {
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_automation" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   role       = aws_iam_role.ec2[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonSSMAutomationRole"
@@ -147,14 +147,14 @@ resource "aws_iam_role_policy_attachment" "ssm_automation" {
 # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.container.console.html
 # http://docs.aws.amazon.com/AmazonECR/latest/userguide/ecr_managed_policies.html#AmazonEC2ContainerRegistryReadOnly
 resource "aws_iam_role_policy_attachment" "ecr_readonly" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   role       = aws_iam_role.ec2[0].name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 resource "aws_ssm_activation" "ec2" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   name               = module.label.id
   iam_role           = aws_iam_role.ec2[0].id
@@ -162,7 +162,7 @@ resource "aws_ssm_activation" "ec2" {
 }
 
 data "aws_iam_policy_document" "default" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   statement {
     actions = [
@@ -323,7 +323,7 @@ data "aws_iam_policy_document" "default" {
 }
 
 resource "aws_iam_instance_profile" "ec2" {
-  count  = var.iam_instance_profile == "" ? 0 : 1
+  count  = var.iam_instance_profile == "" ? 1 : 0
 
   name = "${module.label.id}-eb-ec2"
   role = aws_iam_role.ec2[0].name
