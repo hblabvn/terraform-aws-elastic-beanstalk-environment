@@ -42,41 +42,6 @@ locals {
   // `Namespace` should be removed as well since any string that contains `Name` forces recreation
   // https://github.com/terraform-providers/terraform-provider-aws/issues/3963
   tags = { for t in keys(module.label.tags) : t => module.label.tags[t] if t != "Name" && t != "Namespace" }
-
-  generic_elb_settings = [
-    {
-      namespace = "aws:ec2:vpc"
-      name      = "ELBSubnets"
-      value     = join(",", sort(var.loadbalancer_subnets))
-    },
-
-    {
-      namespace = "aws:ec2:vpc"
-      name      = "ELBScheme"
-      value     = var.environment_type == "LoadBalanced" ? var.elb_scheme : ""
-    },
-    {
-      namespace = "aws:elasticbeanstalk:environment"
-      name      = "LoadBalancerType"
-      value     = var.loadbalancer_type
-    },
-
-    ###===================== Application Load Balancer Health check settings =====================================================###
-    # The Application Load Balancer health check does not take into account the Elastic Beanstalk health check path
-    # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-applicationloadbalancer.html
-    # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-applicationloadbalancer.html#alb-default-process.config
-    
-    {
-      namespace = "aws:elasticbeanstalk:environment:process:default"
-      name      = "Port"
-      value     = var.application_port
-    },
-    {
-      namespace = "aws:elasticbeanstalk:environment:process:default"
-      name      = "Protocol"
-      value     = "TCP"
-    }
-  ]
 }
 
 #
@@ -325,7 +290,55 @@ resource "aws_elastic_beanstalk_environment" "default" {
     name      = "NodeVersion"
     value     = "${var.nodejs_version}"
   }
+  
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "Port"
+    value     = var.application_port
+  }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "Protocol"
+    value     = "TCP"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = var.loadbalancer_type
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBSubnets"
+    value     = join(",", sort(var.loadbalancer_subnets))
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBScheme"
+    value     = var.environment_type == "LoadBalanced" ? var.elb_scheme : ""
+  }
+
+  setting {
+    namespace = "aws:elb:policies"
+    name      = "ConnectionSettingIdleTimeout"
+    value     = "${var.ssh_listener_enabled == "true" ? "3600" : "60"}"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:default"
+    name      = "ListenerEnabled"
+    value     = "${var.http_listener_enabled == "true" ? "true" : "false"}"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "ListenerEnabled"
+    value     = "true"
+  }
+  
   setting {
     namespace = "aws:elbv2:listener:443"
     name      = "Protocol"
