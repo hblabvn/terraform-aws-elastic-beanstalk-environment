@@ -310,6 +310,12 @@ variable "application_port" {
   description = "Port application is listening on"
 }
 
+variable "matcher_http_code" {
+  type        = string
+  default     = "200"
+  description = "A comma-separated list of HTTP code(s) that indicate that an instance is healthy"
+}
+
 variable "preferred_start_time" {
   type        = string
   default     = "Sun:10:00"

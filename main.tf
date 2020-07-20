@@ -523,6 +523,11 @@ locals {
       namespace = "aws:elasticbeanstalk:environment:process:default"
       name      = "Protocol"
       value     = "HTTP"
+    },
+    {
+      namespace = "aws:elasticbeanstalk:environment:process:default"
+      name      = "MatcherHTTPCode"
+      value     = var.matcher_http_code
     }
   ]
 
