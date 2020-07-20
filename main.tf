@@ -306,7 +306,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
-    value     = "${var.http_listener_enabled == "true" ? "true" : "false"}"
+    value     = "true"
   }
 
   setting {
