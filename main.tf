@@ -584,6 +584,12 @@ resource "aws_elastic_beanstalk_environment" "default" {
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
+    name      = "SSHSourceRestriction"
+    value     = "tcp,22,22,${var.ssh_source_restriction}"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
     value     = coalesce(var.iam_instance_profile, concat(aws_iam_instance_profile.ec2.*.name, [""])[0])
     resource  = ""
