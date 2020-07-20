@@ -125,12 +125,6 @@ variable "instance_type" {
   description = "Instances type"
 }
 
-variable "lb_listener_protocol" {
-  type        = string
-  default     = ""
-  description = "Load Balancer Protocol (TCP for nlb, HTTPS for alb)"
-}
-
 variable "enhanced_reporting_enabled" {
   type        = bool
   default     = true

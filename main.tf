@@ -312,7 +312,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elbv2:listener:443"
     name      = "Protocol"
-    value     = var.lb_listener_protocol
+    value     = "TCP"
   }
 
   setting {
