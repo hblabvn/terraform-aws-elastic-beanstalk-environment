@@ -38,14 +38,14 @@ resource "aws_iam_role" "service" {
 
 resource "aws_iam_role_policy_attachment" "enhanced_health" {
   count      = var.enhanced_reporting_enabled && var.iam_service_role != "" ? 1 : 0
-  role       = aws_iam_role.service[0].name
+  role       = concat(aws_iam_role.service.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkEnhancedHealth"
 }
 
 resource "aws_iam_role_policy_attachment" "service" {
   count = var.iam_service_role == "" ? 1 : 0
 
-  role       = aws_iam_role.service[0].name
+  role       = concat(aws_iam_role.service.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkService"
 }
 
@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "ec2" {
 resource "aws_iam_role_policy_attachment" "elastic_beanstalk_multi_container_docker" {
   count = var.iam_instance_profile == "" ? 1 : 0
 
-  role       = aws_iam_role.ec2[0].name
+  role       = concat(aws_iam_role.ec2.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
 }
 
@@ -111,21 +111,21 @@ resource "aws_iam_role_policy" "default" {
 resource "aws_iam_role_policy_attachment" "web_tier" {
   count  = var.iam_instance_profile == "" ? 1 : 0
 
-  role       = aws_iam_role.ec2[0].name
+  role       = concat(aws_iam_role.ec2.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
 }
 
 resource "aws_iam_role_policy_attachment" "worker_tier" {
   count  = var.iam_instance_profile == "" ? 1 : 0
 
-  role       = aws_iam_role.ec2[0].name
+  role       = concat(aws_iam_role.ec2.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_ec2" {
   count  = var.iam_instance_profile == "" ? 1 : 0
 
-  role       = aws_iam_role.ec2[0].name
+  role       = concat(aws_iam_role.ec2.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 
   lifecycle {
@@ -136,7 +136,7 @@ resource "aws_iam_role_policy_attachment" "ssm_ec2" {
 resource "aws_iam_role_policy_attachment" "ssm_automation" {
   count  = var.iam_instance_profile == "" ? 1 : 0
 
-  role       = aws_iam_role.ec2[0].name
+  role       = concat(aws_iam_role.ec2.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonSSMAutomationRole"
 
   lifecycle {
@@ -149,7 +149,7 @@ resource "aws_iam_role_policy_attachment" "ssm_automation" {
 resource "aws_iam_role_policy_attachment" "ecr_readonly" {
   count  = var.iam_instance_profile == "" ? 1 : 0
 
-  role       = aws_iam_role.ec2[0].name
+  role       = concat(aws_iam_role.ec2.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
@@ -326,7 +326,7 @@ resource "aws_iam_instance_profile" "ec2" {
   count  = var.iam_instance_profile == "" ? 1 : 0
 
   name = "${module.label.id}-eb-ec2"
-  role = aws_iam_role.ec2[0].name
+  role = concat(aws_iam_role.ec2.*.name, [""])[0]
 }
 
 resource "aws_security_group" "default" {
@@ -606,7 +606,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "ServiceRole"
-    value     = coalesce(var.iam_service_role, aws_iam_role.service[0].name)
+    value     = coalesce(var.iam_service_role, concat(aws_iam_role.service.*.name, [""])[0])
     resource  = ""
   }
 
