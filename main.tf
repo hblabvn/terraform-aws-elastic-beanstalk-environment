@@ -304,6 +304,30 @@ resource "aws_elastic_beanstalk_environment" "default" {
   }
 
   setting {
+    namespace = "aws:elb:healthcheck"
+    name      = "HealthyThreshold"
+    value     = 3
+  }
+
+  setting {
+    namespace = "aws:elb:healthcheck"
+    name      = "Interval"
+    value     = 15
+  }
+
+  setting {
+    namespace = "aws:elb:healthcheck"
+    name      = "UnhealthyThreshold"
+    value     = 5
+  }
+
+  setting {
+    namespace = "aws:elb:healthcheck"
+    name      = "Timeout"
+    value     = 120
+  }
+
+  setting {
     namespace = "aws:elbv2:listener:443"
     name      = "ListenerEnabled"
     value     = "true"
@@ -312,7 +336,13 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elbv2:listener:443"
     name      = "Protocol"
-    value     = "TCP"
+    value     = "HTTPS"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLCertificateArns"
+    value     = var.loadbalancer_certificate_arn
   }
 
   setting {
