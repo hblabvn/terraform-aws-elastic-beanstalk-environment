@@ -85,6 +85,12 @@ variable "allowed_security_groups" {
   default     = []
 }
 
+variable "ssh_source_restriction" {
+  type        = string
+  description = "EB Load Balancer security group"
+  default     = ""
+}
+
 variable "additional_security_groups" {
   type        = list(string)
   description = "List of security groups to be allowed to connect to the EC2 instances"
