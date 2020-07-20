@@ -14,7 +14,7 @@ output "name" {
 }
 
 output "security_group_id" {
-  value       = concat(aws_security_group.default.*.id,"")[0]
+  value       = concat(aws_security_group.default.*.id,[""])[0]
   description = "Security group id"
 }
 
