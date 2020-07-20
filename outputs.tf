@@ -24,7 +24,7 @@ output "elb_zone_id" {
 }
 
 output "ec2_instance_profile_role_name" {
-  value       = coalesce(var.iam_instance_profile, concat(aws_iam_role.ec2[0].name, [""])[0])
+  value       = coalesce(var.iam_instance_profile, concat(aws_iam_role.ec2.*.name, [""])[0])
   description = "Instance IAM role name"
 }
 
