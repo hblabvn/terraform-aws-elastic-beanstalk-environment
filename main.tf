@@ -37,7 +37,7 @@ resource "aws_iam_role" "service" {
 }
 
 resource "aws_iam_role_policy_attachment" "enhanced_health" {
-  count      = var.enhanced_reporting_enabled && var.iam_service_role != "" ? 1 : 0
+  count      = var.enhanced_reporting_enabled && var.iam_service_role == "" ? 1 : 0
   role       = concat(aws_iam_role.service.*.name, [""])[0]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkEnhancedHealth"
 }
