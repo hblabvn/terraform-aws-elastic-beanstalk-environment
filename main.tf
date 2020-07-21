@@ -316,12 +316,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
   }
 
   setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLCertificateArns"
-    value     = var.loadbalancer_certificate_arn
-  }
-
-  setting {
     namespace = "aws:elb:loadbalancer"
     name      = "CrossZone"
     value     = "true"
