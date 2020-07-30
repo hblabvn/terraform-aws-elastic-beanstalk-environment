@@ -89,7 +89,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
     # value     = join(",", compact(concat([aws_security_group.default.id], sort(var.additional_security_groups))))
-    value     = var.additional_security_groups
+    value     = join(",", sort(var.additional_security_groups))
     resource  = ""
   }
 
