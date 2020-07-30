@@ -13,28 +13,28 @@ module "label" {
 # Service
 #
 
-resource "aws_security_group" "default" {
-  name        = module.label.id
-  description = "Allow inbound traffic from provided Security Groups"
+# resource "aws_security_group" "default" {
+#   name        = module.label.id
+#   description = "Allow inbound traffic from provided Security Groups"
 
-  vpc_id = var.vpc_id
+#   vpc_id = var.vpc_id
 
-  ingress {
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = var.allowed_security_groups
-  }
+#   ingress {
+#     from_port       = 22
+#     to_port         = 22
+#     protocol        = "tcp"
+#     security_groups = var.allowed_security_groups
+#   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  tags = module.label.tags
-}
+#   tags = module.label.tags
+# }
 
 locals {
   // Remove `Name` tag from the map of tags because Elastic Beanstalk generates the `Name` tag automatically
@@ -88,7 +88,8 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "SecurityGroups"
-    value     = join(",", compact(concat([aws_security_group.default.id], sort(var.additional_security_groups))))
+    # value     = join(",", compact(concat([aws_security_group.default.id], sort(var.additional_security_groups))))
+    value     = var.additional_security_groups
     resource  = ""
   }
 
