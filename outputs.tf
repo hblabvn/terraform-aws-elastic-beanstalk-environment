@@ -8,11 +8,6 @@ output "name" {
   description = "Name"
 }
 
-output "security_group_id" {
-  value       = aws_security_group.default.id
-  description = "Security group id"
-}
-
 output "elb_zone_id" {
   value       = var.alb_zone_id[var.region]
   description = "ELB zone id"
