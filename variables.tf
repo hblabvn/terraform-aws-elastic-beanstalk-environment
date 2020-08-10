@@ -133,7 +133,7 @@ variable "enhanced_reporting_enabled" {
 
 variable "managed_actions_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Enable managed platform updates. When you set this to true, you must also specify a `PreferredStartTime` and `UpdateLevel`"
 }
 
